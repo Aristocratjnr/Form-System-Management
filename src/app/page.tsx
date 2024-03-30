@@ -119,8 +119,8 @@ class FormFieldCreator extends React.Component<FormFieldCreatorProps, FormFieldC
     return (
       <div className="relative p-4 ">
           <div className="flex flex-col justify-center items-center mb-4  ">
-            <center><h2 className="text-2xl font-bold ">Form Management System</h2></center>
-          </div><br/>
+            <center><h1 className="text-2xl font-bold ">Form Management System<code><sub>InkrisCompass.</sub></code></h1></center>
+          </div><br/><br/><br/>
         <div className='z-10'>
           <center>
             <button
