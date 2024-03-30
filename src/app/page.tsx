@@ -81,7 +81,7 @@ class FormFieldCreator extends React.Component<FormFieldCreatorProps, FormFieldC
     const { fieldType, fieldName, isRequired, formFields } = this.state;
 
     if (!fieldType || !fieldName) {
-      this.setState({ errors: { fieldName: 'Field name and type are required' } });
+      this.setState({ errors: { fieldName: 'Field name and type are required!' } });
       return;
     }
 
@@ -119,7 +119,7 @@ class FormFieldCreator extends React.Component<FormFieldCreatorProps, FormFieldC
     return (
       <div className="relative p-4 ">
           <div className="flex flex-col justify-center items-center mb-4  ">
-            <center><h1 className="text-2xl font-bold ">Form Management System<code><sub>InkrisCompass.</sub></code></h1></center>
+            <center><h1 className="text-5xl font-bold ">Form Management System</h1><code><sub>InkrisCompass.</sub></code></center>
           </div><br/><br/><br/>
         <div className='z-10'>
           <center>
@@ -167,7 +167,7 @@ class FormFieldCreator extends React.Component<FormFieldCreatorProps, FormFieldC
                   </svg>
                 </button>
               </div>
-              <h2 className="text-xl font-bold mb-4 text-center">Add a new Field</h2>
+              <h2 className="text-xl font-bold mb-4 text-center">Add Form Field</h2>
               <div className="mb-4">
                 <label htmlFor="fieldType" className="block font-bold mb-1">
                   Your Field Type:
@@ -184,7 +184,7 @@ class FormFieldCreator extends React.Component<FormFieldCreatorProps, FormFieldC
                   <option value="number">Telephone</option>
                   <option value="file">File Upload</option>
                   <option value="textarea">Textarea</option>
-                  <option value="date">Date of birth</option>
+                  <option value="date">DateOfbirth</option>
                 </select>
               </div>
               {fieldType && (
