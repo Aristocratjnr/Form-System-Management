@@ -1,29 +1,37 @@
+import React, { useRef } from 'react';
 
-
-
-import React from 'react'
-
-type Props = {
-    children: React.ReactNode
+interface Props {
+    children: React.ReactNode;
+    isOpen: boolean;
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ConfigModal = ({ children }: Props) => {
+const ConfigModal: React.FC<Props> = ({ children, isOpen, setIsOpen }) => {
+    const modalRef = useRef<HTMLDialogElement>(null);
+
+    const openModal = () => {
+        setIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsOpen(false);
+    };
+
     return (
         <>
-            {/* Open the modal using document.getElementById('ID').showModal() method */}
-            <dialog id="config-modal" className="modal">
+            <dialog id="config-modal" ref={modalRef} className="modal" open={isOpen}>
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">Configure Your Data Fields</h3>
-                    <div className="my4">
+                    <div className="my-4">
                         {children}
                     </div>
                 </div>
-                <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
+                <form method="dialog" className="modal-backdrop" onSubmit={(e) => { e.preventDefault(); closeModal(); }}>
+                    <button type="submit">Close</button>
                 </form>
             </dialog>
         </>
-    )
-}
+    );
+};
 
-export default ConfigModal
+export default ConfigModal;
