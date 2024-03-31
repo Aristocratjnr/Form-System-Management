@@ -3,6 +3,12 @@
 import React, { ChangeEvent } from 'react';
 import './globals.css'; // Import global.css file
 import { IoIosCloseCircle } from "react-icons/io";
+import Head from 'next/head';
+
+
+<Head>
+  <link rel="icon" href="src/app/favicon.ico" />
+</Head>
 
 interface FormField {
   type: string;
@@ -119,15 +125,15 @@ class FormFieldCreator extends React.Component<FormFieldCreatorProps, FormFieldC
     return (
       <div className="relative p-4 ">
           <div className="flex flex-col justify-center items-center mb-4  ">
-            <center><h1 className="text-5xl font-bold ">Form Management System</h1><code><sub>InkrisCompass.</sub></code></center>
-          </div><br/><br/><br/>
+            <center><h1 className="text-4xl font-bold ">Form Management System</h1><code><sub>InkrisCompass.</sub></code></center>
+          </div><br/><br/><br/><br/><br/><br/><br/>
         <div className='z-10'>
           <center>
             <button
               onClick={this.toggleModal}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  bottom-4 right-4"
             >
-              Add fields
+              Add your form
             </button>
           </center>
         </div>
@@ -167,7 +173,7 @@ class FormFieldCreator extends React.Component<FormFieldCreatorProps, FormFieldC
                   </svg>
                 </button>
               </div>
-              <h2 className="text-xl font-bold mb-4 text-center">Add Form Field</h2>
+              <h2 className="text-xl font-bold mb-4 text-center">Your details</h2>
               <div className="mb-4">
                 <label htmlFor="fieldType" className="block font-bold mb-1">
                   Your Field Type:
@@ -190,7 +196,7 @@ class FormFieldCreator extends React.Component<FormFieldCreatorProps, FormFieldC
               {fieldType && (
                 <div>
                   <label htmlFor="fieldName" className="block font-bold mb-1">
-                    Type a Field Name:
+                    FieldName(e.g.firstname):
                   </label>
                   <input
                     type="text"
@@ -217,12 +223,12 @@ class FormFieldCreator extends React.Component<FormFieldCreatorProps, FormFieldC
                   )}
                 </div>
               )}
-              <button
+              <center><button
                 onClick={this.handleSaveConfiguration}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-auto block"
               >
                 Save Configuration
-              </button>
+              </button></center>
               {errors.fieldName && (
                 <p className="text-red-500 text-sm mt-2">{errors.fieldName}</p>
               )}
