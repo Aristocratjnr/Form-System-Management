@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import React, { useEffect, useState } from "react";
 import ConfigModal from "@/components/Modal";
 import { useRouter } from "next/navigation";
@@ -217,10 +217,10 @@ const FormFieldCreator: React.FC = () => {
                   </option>
                   <option value="">Select Field Type</option>
                   <option value="text">Text</option>
-                  <option value="email">Email</option>
-                  <option value="number">Telephone</option>
-                  <option value="file">File Upload</option>
-                  <option value="textarea">Text Area</option>
+                  <option value="email">Email_Address</option>
+                  <option value="number">Number</option>
+                  <option value="file">Upload</option>
+                  <option value="textarea">Description</option>
                   <option value="date">Date</option>
                 </select>
               </div>
