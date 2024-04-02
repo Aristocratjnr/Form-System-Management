@@ -1,6 +1,11 @@
-'use client'
-import React, { useState } from 'react';
-import ConfigModal from '@/components/Modal'; 
+"use client";
+import React, { useEffect, useState } from "react";
+import ConfigModal from "@/components/Modal";
+import { useRouter } from "next/navigation";
+import { IoIosMail } from "react-icons/io";
+import { FaPhoneAlt } from "react-icons/fa";
+import { FaFileAlt } from "react-icons/fa";
+import { CiTextAlignLeft } from "react-icons/ci";
 
 interface FormField {
   id: string;
@@ -8,161 +13,259 @@ interface FormField {
   name: string;
   technicalName: string;
   required: boolean;
+  value: string;
 }
 
 const FormFieldCreator: React.FC = () => {
+  const router = useRouter();
+
   const [isOpen, setIsOpen] = useState(false);
-  const [fieldType, setFieldType] = useState('');
-  const [fieldName, setFieldName] = useState('');
+  const [fieldType, setFieldType] = useState("");
+  const [fieldName, setFieldName] = useState("");
   const [isRequired, setIsRequired] = useState(false);
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleFieldTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setFieldType(e.target.value);
+    setFieldType(e.target.value);
   };
 
-  const handleFieldNameChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const value = e.target.value;
-      if (fieldType === 'email') {
-          setFieldName(value);
-      } else {
-          setFieldName(value.toLowerCase().replace(/\s+/g, '_'));
-      }
+  const handleFieldNameChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const value = e.target.value;
+    if (fieldType === "email") {
+      setFieldName(value);
+    } else {
+      setFieldName(value.toLowerCase().replace(/\s+/g, "_"));
+    }
+  };
+
+  const oldvalue = async () => {
+    const rawData = await localStorage.getItem("dataValue");
+    setFormFields(rawData && JSON.parse(rawData));
+  };
+  const handleSubmit = () => {
+    // Define the accumulator with an index signature
+    const fieldsValues = formFields.reduce<{ [key: string]: string }>(
+      (acc, field) => {
+        acc[field.name] = field.value;
+        return acc;
+      },
+      {}
+    );
+
+    // console.log(fieldsValues);
+    if (fieldsValues) {
+      localStorage.setItem("dataKey", JSON.stringify(fieldsValues));
+      localStorage.setItem("dataValue", JSON.stringify(formFields));
+      // console.log(formFields)
+      router.push(`/details`, fieldsValues);
+    }
+  };
+
+  const handleInputChange = (id: string, inputValue: string) => {
+    setFormFields(
+      formFields.map((field) =>
+        field.id === id ? { ...field, value: inputValue } : field
+      )
+    );
   };
 
   const handleIsRequiredChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setIsRequired(e.target.checked);
+    setIsRequired(e.target.checked);
   };
 
   const handleSaveConfiguration = () => {
-      if (!fieldType || !fieldName) {
-          setErrors({ fieldName: 'Field name and type are required!' });
-          return;
-      }
+    if (!fieldType || !fieldName) {
+      setErrors({ fieldName: "Field name and type are required!" });
+      return;
+    }
 
-      const newField: FormField = {
-          id: Math.random().toString(36).substring(7),
-          type: fieldType,
-          name: fieldName,
-          technicalName: fieldName,
-          required: isRequired,
-      };
+    const newField: FormField = {
+      id: Math.random().toString(36).substring(7),
+      type: fieldType,
+      name: fieldName,
+      technicalName: fieldName,
+      required: isRequired,
+      value: "",
+    };
 
-      setFormFields(prevFormFields => [...prevFormFields, newField]);
-      setIsOpen(false);
-      setFieldType('');
-      setFieldName('');
-      setIsRequired(false);
-      setErrors({});
+    setFormFields((prevFormFields) => [...prevFormFields, newField]);
+    setIsOpen(false);
+    setFieldType("");
+    setFieldName("");
+    setIsRequired(false);
+    setErrors({});
   };
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, id: string) => {
-      e.dataTransfer.setData('id', id);
+    e.dataTransfer.setData("id", id);
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      const droppedId = e.dataTransfer.getData('id');
-      const draggedField = formFields.find(field => field.id === droppedId);
-      if (draggedField) {
-          const newFormFields = formFields.filter(field => field.id !== droppedId);
-          setFormFields([...newFormFields, draggedField]);
-      }
+    e.preventDefault();
+    const droppedId = e.dataTransfer.getData("id");
+    const draggedField = formFields.find((field) => field.id === droppedId);
+    if (draggedField) {
+      const newFormFields = formFields.filter(
+        (field) => field.id !== droppedId
+      );
+      setFormFields([...newFormFields, draggedField]);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
+    e.preventDefault();
   };
 
+  useEffect(() => {
+    oldvalue();
+  }, []);
   return (
-      <div className="container p-4">
-          <center>
+    <div
+      style={{
+        backgroundImage: `url('bg.jpg')`,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+      }}
+      className="  h-[100vh]  grid grid-cols-1 place-items-center"
+    >
+      <div className="flex flex-col  lg:justify-between lg:flex-row-reverse  bg-white shadow-lg w-8/12 h-5/6 rounded-lg">
+        <center className="lg:flex lg:items-center lg:flex-col justify-center lg:w-6/12 p-4 lg:p-0">
+          <h1>Select Input Field</h1>
+          <button
+            onClick={() => setIsOpen(true)}
+            disabled={isOpen}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  bottom-4 right-4"
+          >
+            add field
+          </button>
+        </center>
+        <div
+          id="hide-scrollbar:"
+          className=" bg-blue-200 hide-scrollbar lg:w-6/12 h-full flex flex-col items-center p-4 overflow-scroll"
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+        >
+          <h1>Generated Fields</h1>
+          {formFields.map((field, index) => (
+            <div
+              key={field.id}
+              className="mb-4 w-10/12  "
+              draggable
+              onDragStart={(e) => handleDragStart(e, field.id)}
+            >
+              <label className="block font-semibold text-sm mb-1">{field.name}</label>
+              <div className="w-full bg-white flex items-center rounded-lg">
+               
+                <input
+                  type={field.type}
+                  className="input  w-full "
+                  // placeholder={field.name}
+                  required={field.required}
+                  value={field.value}
+                  onChange={(e) => handleInputChange(field.id, e.target.value)} // Update on change
+                />
+                 {field.type === "email" ? (
+                  <div className="pr-2 ">
+                    <IoIosMail size={24} color="gray" />
+                  </div>
+                ) : field.type === "number" ? (
+                  <div className="pr-2 ">
+                    <FaPhoneAlt size={24} color="gray" />
+                  </div>
+                ) : (
+                  field.type === "text" && (
+                    <div className="pr-2 ">
+                      <CiTextAlignLeft size={24} color="gray" />
+                    </div>
+                  )
+                )}
+              </div>
+              {field.required && (
+                <span className="text-red-500 text-sm"> *</span>
+              )}
+            </div>
+          ))}
+          {formFields.length > 0 && (
+            <div>
               <button
-                  onClick={() => setIsOpen(true)}
-                  disabled={isOpen}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  bottom-4 right-4"
+                onClick={handleSubmit}
+                className="p-2 text-white rounded-lg hover:bg-blue-700 bg-blue-500"
               >
-                  add field
+                Submit
               </button>
-          </center>
-          <div className="mt-8 w-96" onDrop={handleDrop} onDragOver={handleDragOver}>
-              {formFields.map((field, index) => (
-                  <div key={field.id} className="mb-4" draggable onDragStart={(e) => handleDragStart(e, field.id)}>
-                      <label className="block font-bold mb-1">{field.name}:</label>
-                      <input
-                          type={field.type}
-                          className="input input-bordered w-full max-w-xs"
-                          placeholder={field.name}
-                          required={field.required}
-                      />
-                      {field.required && <span className="text-red-500 text-sm"> *</span>}
-                  </div>
-              ))}
+            </div>
+          )}
+        </div>
+        {isOpen && (
+          <div className="absolute bg-gray-600 bg-opacity-50 w-full h-full left-0 top-0">
+            <ConfigModal isOpen={isOpen} setIsOpen={setIsOpen}>
+              <div className="mb-4">
+                <label htmlFor="fieldType" className="block font-light mb-1">
+                  Field Type:
+                </label>
+                <select
+                  id="fieldType"
+                  value={fieldType}
+                  onChange={handleFieldTypeChange}
+                  className="select select-bordered w-full "
+                >
+                  <option disabled selected>
+                    Select Field Type
+                  </option>
+                  <option value="">Select Field Type</option>
+                  <option value="text">Text</option>
+                  <option value="email">Email</option>
+                  <option value="number">Telephone</option>
+                  <option value="file">File Upload</option>
+                  <option value="textarea">Text Area</option>
+                  <option value="date">Date</option>
+                </select>
+              </div>
+
+              {fieldType && (
+                <div>
+                  <label htmlFor="fieldName" className="block font-bold mb-1">
+                    Field name:
+                  </label>
+                  <input
+                    type="text"
+                    id="fieldName"
+                    value={fieldName}
+                    onChange={handleFieldNameChange}
+                    className="w-full p-2 border border-gray-300 rounded mb-4"
+                  />
+                </div>
+              )}
+
+              <div>
+                <input
+                  type="checkbox"
+                  id="isRequired"
+                  checked={isRequired}
+                  onChange={handleIsRequiredChange}
+                  className="mr-2"
+                />
+                <label htmlFor="isRequired">Required</label>
+              </div>
+
+              <button
+                onClick={handleSaveConfiguration}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-auto block"
+              >
+                Save Configuration
+              </button>
+
+              {errors.fieldName && (
+                <p className="text-red-500 text-sm mt-2">{errors.fieldName}</p>
+              )}
+            </ConfigModal>
           </div>
-
-          <div className="my-8">
-              <ConfigModal isOpen={isOpen} setIsOpen={setIsOpen}>
-                  <div className="mb-4">
-                      <label htmlFor="fieldType" className="block font-light mb-1">
-                          Field Type:
-                      </label>
-                      <select
-                          id="fieldType"
-                          value={fieldType}
-                          onChange={handleFieldTypeChange}
-                          className="select select-bordered w-full "
-                      >
-                          <option disabled selected>
-                              Select Field Type
-                          </option>
-                          <option value="">Select Field Type</option>
-                          <option value="text">Text</option>
-                          <option value="email">Email</option>
-                          <option value="number">Telephone</option>
-                          <option value="file">File Upload</option>
-                          <option value="textarea">Text Area</option>
-                          <option value="date">Date</option>
-                      </select>
-                  </div>
-
-                  {fieldType && (
-                      <div>
-                          <label htmlFor="fieldName" className="block font-bold mb-1">
-                              Field name:
-                          </label>
-                          <input
-                              type="text"
-                              id="fieldName"
-                              value={fieldName}
-                              onChange={handleFieldNameChange}
-                              className="w-full p-2 border border-gray-300 rounded mb-4"
-                          />
-                      </div>
-                  )}
-
-                  <div>
-                      <input
-                          type="checkbox"
-                          id="isRequired"
-                          checked={isRequired}
-                          onChange={handleIsRequiredChange}
-                          className="mr-2"
-                      />
-                      <label htmlFor="isRequired">Required</label>
-                  </div>
-
-                  <button
-                      onClick={handleSaveConfiguration}
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-auto block"
-                  >
-                      Save Configuration
-                  </button>
-
-                  {errors.fieldName && <p className="text-red-500 text-sm mt-2">{errors.fieldName}</p>}
-              </ConfigModal>
-          </div>
+        )}
       </div>
+    </div>
   );
 };
 
