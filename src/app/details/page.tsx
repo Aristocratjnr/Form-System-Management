@@ -54,7 +54,7 @@ function page() {
       }}
       className="  h-[100vh]  grid grid-cols-1 place-items-center"
     >
-      <div className="flex flex-col items-center  bg-white shadow-lg w-8/12 h-5/6 rounded-lg">
+      <div className="flex flex-col items-center overflow-scroll hide-scrollbar  bg-white shadow-lg w-8/12 h-5/6 rounded-lg">
         <div className=" grid md:grid-cols-2  w-full place-items-center p-4 gap-4">
           {data &&
             data.map((value: any, index: number) => {
