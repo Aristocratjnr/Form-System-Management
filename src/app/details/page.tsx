@@ -6,6 +6,7 @@ import { IoIosMail } from "react-icons/io";
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaRegCalendar } from "react-icons/fa6";
 import { CiTextAlignLeft } from "react-icons/ci";
+import { CiTextAlignCenter } from "react-icons/ci";
 
 function Page() {
   const router = useRouter();
@@ -48,6 +49,10 @@ function Page() {
                   <div className="pr-2 ">
                     <CiTextAlignLeft size={24} color="gray" />
                   </div>
+                  ) : value.type === "textarea" ? (
+                    <div className="pr-2 ">
+                      <CiTextAlignCenter size={24} color="gray" />
+                    </div>
                 ) : value.type === "date" ? (
                   <div className="pr-2 ">
                     <FaRegCalendar size={24} color="gray" />
