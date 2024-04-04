@@ -194,14 +194,7 @@ const FormFieldCreator: React.FC = () => {
                 <p className="text-red-500 text-sm mt-2">{errors.fieldName}</p>
               )}
           </div>
-          {/* <h1>Select Input Field</h1>
-          <button
-            onClick={() => setIsOpen(true)}
-            disabled={isOpen}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  bottom-4 right-4"
-          >
-            add field
-          </button> */}
+
         </center>
         <div
           id="hide-scrollbar:"
