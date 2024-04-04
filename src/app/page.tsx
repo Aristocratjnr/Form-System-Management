@@ -133,14 +133,75 @@ const FormFieldCreator: React.FC = () => {
     >
       <div className="flex flex-col  lg:justify-between lg:flex-row-reverse  bg-white shadow-lg w-8/12 h-5/6 rounded-lg">
         <center className="lg:flex lg:items-center lg:flex-col justify-center lg:w-6/12 p-4 lg:p-0">
-          <h1>Select Input Field</h1>
+        <div className=" w-9/12 gap-1 grid">
+              <div className="mb-4">
+                <label htmlFor="fieldType" className="block font-light mb-1">
+                  Field Type:
+                </label>
+                <select
+                  id="fieldType"
+                  value={fieldType}
+                  onChange={handleFieldTypeChange}
+                  className="select select-bordered w-full "
+                >
+                  <option disabled selected>
+                    Select Field Type
+                  </option>
+                  <option value="">Select Field Type</option>
+                  <option value="text">Text</option>
+                  <option value="email">Email_Address</option>
+                  <option value="number">Number</option>
+                  <option value="file">Upload</option>
+                  <option value="textarea">Description</option>
+                  <option value="date">Date</option>
+                </select>
+              </div>
+
+              {fieldType && (
+                <div>
+                  <label htmlFor="fieldName" className="block font-bold mb-1">
+                    Field name:
+                  </label>
+                  <input
+                    type="text"
+                    id="fieldName"
+                    value={fieldName}
+                    onChange={handleFieldNameChange}
+                    className="w-full p-2 border border-gray-300 rounded mb-4"
+                  />
+                </div>
+              )}
+
+              <div className="w-11/12  flex justify-start">
+                <input
+                  type="checkbox"
+                  id="isRequired"
+                  checked={isRequired}
+                  onChange={handleIsRequiredChange}
+                  className="mr-2"
+                />
+                <label htmlFor="isRequired">Required</label>
+              </div>
+
+              <button
+                onClick={handleSaveConfiguration}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-auto block"
+              >
+                Save Configuration
+              </button>
+
+              {errors.fieldName && (
+                <p className="text-red-500 text-sm mt-2">{errors.fieldName}</p>
+              )}
+          </div>
+          {/* <h1>Select Input Field</h1>
           <button
             onClick={() => setIsOpen(true)}
             disabled={isOpen}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  bottom-4 right-4"
           >
             add field
-          </button>
+          </button> */}
         </center>
         <div
           id="hide-scrollbar:"
@@ -199,71 +260,7 @@ const FormFieldCreator: React.FC = () => {
             </div>
           )}
         </div>
-        {isOpen && (
-          <div className="absolute bg-gray-600 bg-opacity-50 w-full h-full left-0 top-0">
-            <ConfigModal isOpen={isOpen} setIsOpen={setIsOpen}>
-              <div className="mb-4">
-                <label htmlFor="fieldType" className="block font-light mb-1">
-                  Field Type:
-                </label>
-                <select
-                  id="fieldType"
-                  value={fieldType}
-                  onChange={handleFieldTypeChange}
-                  className="select select-bordered w-full "
-                >
-                  <option disabled selected>
-                    Select Field Type
-                  </option>
-                  <option value="">Select Field Type</option>
-                  <option value="text">Text</option>
-                  <option value="email">Email_Address</option>
-                  <option value="number">Number</option>
-                  <option value="file">Upload</option>
-                  <option value="textarea">Description</option>
-                  <option value="date">Date</option>
-                </select>
-              </div>
-
-              {fieldType && (
-                <div>
-                  <label htmlFor="fieldName" className="block font-bold mb-1">
-                    Field name:
-                  </label>
-                  <input
-                    type="text"
-                    id="fieldName"
-                    value={fieldName}
-                    onChange={handleFieldNameChange}
-                    className="w-full p-2 border border-gray-300 rounded mb-4"
-                  />
-                </div>
-              )}
-
-              <div>
-                <input
-                  type="checkbox"
-                  id="isRequired"
-                  checked={isRequired}
-                  onChange={handleIsRequiredChange}
-                  className="mr-2"
-                />
-                <label htmlFor="isRequired">Required</label>
-              </div>
-
-              <button
-                onClick={handleSaveConfiguration}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-auto block"
-              >
-                Save Configuration
-              </button>
-
-              {errors.fieldName && (
-                <p className="text-red-500 text-sm mt-2">{errors.fieldName}</p>
-              )}
-            </ConfigModal>
-          </div>
-        )}
+   
       </div>
     </div>
   );
