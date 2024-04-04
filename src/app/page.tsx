@@ -122,6 +122,15 @@ const FormFieldCreator: React.FC = () => {
   useEffect(() => {
     oldvalue();
   }, []);
+
+  // Function to convert spaced out capitalized words
+  function getFieldDisplayName(name: string): string {
+    return name
+      .split('')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
   return (
     <div
       style={{
@@ -210,7 +219,10 @@ const FormFieldCreator: React.FC = () => {
               draggable
               onDragStart={(e) => handleDragStart(e, field.id)}
             >
-              <label className="block font-semibold text-sm mb-1">{field.name}</label>
+              <label className="block font-semibold text-sm mb-1">
+                {/* Modify the label to display spaced out capitalized field name */}
+                {getFieldDisplayName(field.name)}
+              </label>
               <div className="w-full bg-white flex items-center rounded-lg">
                
                 <input
