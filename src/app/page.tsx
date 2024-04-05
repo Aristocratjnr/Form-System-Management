@@ -182,17 +182,6 @@ const FormFieldCreator: React.FC = () => {
                 </div>
               )}
 
-              <div className="w-11/12  flex justify-start">
-                <input
-                  type="checkbox"
-                  id="isRequired"
-                  checked={isRequired}
-                  onChange={handleIsRequiredChange}
-                  className="mr-2"
-                />
-                <label htmlFor="isRequired">Required</label>
-              </div>
-
               <button
                 onClick={handleSaveConfiguration}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-auto block"
