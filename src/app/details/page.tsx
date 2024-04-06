@@ -16,6 +16,13 @@ function Page() {
 
   const getValues = async () => {
     // Your existing implementation
+  const value1=await  localStorage.getItem("dataValue")
+   const value2:any|null= await localStorage.getItem("dataKey")
+    console.log(value1,value2)
+    setData(JSON.parse(value1||""))
+    setReceivedData(JSON.parse(value2||""))
+
+    
   };
 
   useEffect(() => {
@@ -36,7 +43,7 @@ function Page() {
           {data &&
             data.map((value: any, index: number) => (
               <div key={index} className="md:w-10/12 w-full bg-blue-200 p-4 rounded-lg shadow-lg">
-                <h1>{value.name}: {receivedData[index]}</h1>
+                <h1>{value.name}: {receivedData[(index+1).toString()]}</h1>
                 {value.type === "email" ? (
                   <div className="pr-2 ">
                     <IoIosMail size={24} color="gray" />

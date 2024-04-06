@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import ConfigModal from "@/components/Modal";
 import { useRouter } from "next/navigation";
@@ -12,20 +12,25 @@ interface FormField {
   type: string;
   name: string;
   technicalName: string;
-  required: boolean;
   value: string;
 }
 
 const FormFieldCreator: React.FC = () => {
   const router = useRouter();
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//new value states
+const [id, setId]=useState<any>()
+const [inputType, setInputType]=useState<any>()
+const [fieldValue, setFieldValue]=useState<any>()
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//value states
   const [isOpen, setIsOpen] = useState(false);
   const [fieldType, setFieldType] = useState("");
   const [fieldName, setFieldName] = useState("");
   const [isRequired, setIsRequired] = useState(false);
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
+  const [edit, setEdit] = useState<boolean>(false);
   const handleFieldTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFieldType(e.target.value);
   };
@@ -45,11 +50,15 @@ const FormFieldCreator: React.FC = () => {
     const rawData = await localStorage.getItem("dataValue");
     setFormFields(rawData && JSON.parse(rawData));
   };
+  let counter = 1
   const handleSubmit = () => {
     // Define the accumulator with an index signature
     const fieldsValues = formFields.reduce<{ [key: string]: string }>(
       (acc, field) => {
-        acc[field.name] = field.value;
+        const key = counter.toString()
+        console.log( field);
+        acc[key] = field.value;
+        counter++
         return acc;
       },
       {}
@@ -72,9 +81,7 @@ const FormFieldCreator: React.FC = () => {
     );
   };
 
-  const handleIsRequiredChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsRequired(e.target.checked);
-  };
+
 
   const handleSaveConfiguration = () => {
     if (!fieldType || !fieldName) {
@@ -87,7 +94,6 @@ const FormFieldCreator: React.FC = () => {
       type: fieldType,
       name: fieldName,
       technicalName: fieldName,
-      required: isRequired,
       value: "",
     };
 
@@ -121,17 +127,35 @@ const FormFieldCreator: React.FC = () => {
 
   useEffect(() => {
     oldvalue();
+    // console.log(formFields)
   }, []);
 
   // Function to convert snake_case to spaced out capitalized words
   function getFieldDisplayName(name: string): string {
     return name
-      .split('_')
+      .split("_")
 
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   }
 
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //edit functions
+ // Handle editing a field configuration
+ const handleEditField = (id: string, newName: string, newType: string) => {
+  const updatedFields = formFields.map(field => {
+    if (field.id === id) {
+      // console.log(newType)
+      // console.log(`id: ${id},name:${newName}, type: ${newType}, technicalName:${newName}, value:"" `)
+      return {  id: id,name:newType, type:  newName, technicalName:newName, value:"" };
+    }
+    return field;
+  });
+  setFormFields(updatedFields);
+  localStorage.setItem("dataValue",JSON.stringify(updatedFields));
+};
   return (
     <div
       style={{
@@ -143,57 +167,203 @@ const FormFieldCreator: React.FC = () => {
     >
       <div className="flex flex-col  lg:justify-between lg:flex-row-reverse  bg-white shadow-lg w-8/12 h-5/6 rounded-lg">
         <center className="lg:flex lg:items-center lg:flex-col justify-center lg:w-6/12 p-4 lg:p-0">
-        <div className=" w-9/12 gap-1 grid">
-              <div className="mb-4">
-                <label htmlFor="fieldType" className="block font-light mb-1">
-                  Field Type:
-                </label>
-                <select
-                  id="fieldType"
-                  value={fieldType}
-                  onChange={handleFieldTypeChange}
-                  className="select select-bordered w-full "
+          <div className=" w-9/12 gap-1 grid">
+            {/* field separation */}
+
+            <div className="flex w-full  bg-gray-200 rounded-full justify-center">
+              {/* add */}
+              {edit ? (
+                <button
+                  onClick={() => {
+                    setEdit(false);
+                  }}
+                  className="w-6/12 flex justify-center border-r-2 rounded-l-full bg-blue-200 h-full p-2"
                 >
-                  <option disabled selected>
-                    Select Field Type
-                  </option>
-                  <option value="">Select Field Type</option>
-                  <option value="text">Text</option>
-                  <option value="email">Email_Address</option>
-                  <option value="number">Number</option>
-                  <option value="file">Upload</option>
-                  <option value="textarea">Description</option>
-                  <option value="date">Date</option>
-                </select>
-              </div>
+                  Edit
+                </button>
+              ) : (
+                <button className="w-6/12 flex justify-center border-r-2  p-2 rounded-r-full">
+                  Edit
+                </button>
+              )}
+              {/* edit */}
+              {!edit ? (
+                <button
+                  onClick={() => {
+                    setEdit(true);
+                  }}
+                  className="w-6/12 flex justify-center border-l-2 rounded-r-full bg-blue-200 h-full p-2"
+                >
+                  Add
+                </button>
+              ) : (
+                <button className="w-6/12 flex justify-center border-l-2  p-2 rounded-r-full">
+                  Add
+                </button>
+              )}
+            </div>
 
-              {fieldType && (
+            {/* fields */}
+            {
+              // add
+              edit ? (
                 <div>
-                  <label htmlFor="fieldName" className="block font-bold mb-1">
-                    Field name:
-                  </label>
-                  <input
-                    type="text"
-                    id="fieldName"
-                    value={fieldName}
-                    onChange={handleFieldNameChange}
-                    className="w-full p-2 border border-gray-300 rounded mb-4"
-                  />
+                  <div className="mb-4 ">
+                    <label
+                      htmlFor="fieldType"
+                      className="block font-light mb-1 "
+                    >
+                      Field Type:
+                    </label>
+                    <select
+                      id="fieldType"
+                      value={fieldType}
+                      onChange={handleFieldTypeChange}
+                      className="select select-bordered w-full "
+                    >
+                      <option disabled selected>
+                        Select Field Type
+                      </option>
+                      <option value="">Select Field Type</option>
+                      <option value="text">Text</option>
+                      <option value="email">Email_Address</option>
+                      <option value="number">Number</option>
+                      <option value="file">Upload</option>
+                      <option value="textarea">Description</option>
+                      <option value="date">Date</option>
+                    </select>
+                  </div>
+
+                  {fieldType && (
+                    <div className="">
+                      <label
+                        htmlFor="fieldName"
+                        className="block font-bold mb-1 "
+                      >
+                        Field name:
+                      </label>
+                      <input
+                        type="text"
+                        id="fieldName"
+                        value={fieldName}
+                        onChange={handleFieldNameChange}
+                        className="w-full p-2 border border-gray-300 rounded mb-4"
+                      />
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleSaveConfiguration}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-auto block"
+                  >
+                    Save Configuration
+                  </button>
+
+                  {errors.fieldName && (
+                    <p className="text-red-500 text-sm mt-2">
+                      {errors.fieldName}
+                    </p>
+                  )}
                 </div>
-              )}
+              ) : (
+                <div>
+                  <div className="mb-4">
+                    <label
+                      htmlFor="fieldType"
+                      className="block font-light mb-1"
+                    >
+                   Select   Field :
+                    </label>
+                    <select
+                      id="fieldType"
+                      value={id}
+                      onChange={(value)=>{
+                        setId(value.target.value)
+                      }}
+                      className="select select-bordered w-full "
+                    >
+                      <option disabled selected>
+                        Select Field Type
+                      </option>
 
-              <button
-                onClick={handleSaveConfiguration}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-auto block"
-              >
-                Save Configuration
-              </button>
+                      {
+                        formFields.map((value, index)=>(
+                          <option key={index} value={value.id}>{value.name}</option>
 
-              {errors.fieldName && (
-                <p className="text-red-500 text-sm mt-2">{errors.fieldName}</p>
-              )}
+                        ))
+                      }
+                      <option value="">Select Field Type</option>
+                     
+                    </select>
+                  </div>
+
+                  <div className="mb-4 ">
+                    <label
+                      htmlFor="fieldType"
+                      className="block font-light mb-1 "
+                    >
+                     New Field Type:
+                    </label>
+                    <select
+                      id="fieldType"
+                      value={inputType}
+                      onChange={(value)=>{
+                        setInputType(value.target.value)
+                      }}
+                      className="select select-bordered w-full "
+                    >
+                      <option disabled selected>
+                        Select Field Type
+                      </option>
+                      <option value="">Select Field Type</option>
+                      <option value="text">Text</option>
+                      <option value="email">Email_Address</option>
+                      <option value="number">Number</option>
+                      <option value="file">Upload</option>
+                      <option value="textarea">Description</option>
+                      <option value="date">Date</option>
+                    </select>
+                  </div>
+
+                  {inputType && (
+                    <div>
+                      <label
+                        htmlFor="fieldName"
+                        className="block font-bold mb-1"
+                      >
+                        Field New name:
+                      </label>
+                      <input
+                        type="text"
+                        id="fieldName"
+                        value={fieldValue}
+                        onChange={(value)=>{
+                          // console.log(value.target.value)
+                          setFieldValue(value.target.value)
+                        }}
+                        className="w-full p-2 border border-gray-300 rounded mb-4"
+                      />
+                    </div>
+                  )}
+
+                  <button
+                    onClick={()=>{
+                      handleEditField(id,inputType,  fieldValue)
+                    }}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-auto block"
+                  >
+                    Save Edit
+                  </button>
+
+                  {errors.fieldName && (
+                    <p className="text-red-500 text-sm mt-2">
+                      {errors.fieldName}
+                    </p>
+                  )}
+                </div>
+              )
+            }
           </div>
-
         </center>
         <div
           id="hide-scrollbar:"
@@ -214,16 +384,15 @@ const FormFieldCreator: React.FC = () => {
                 {getFieldDisplayName(field.name)}
               </label>
               <div className="w-full bg-white flex items-center rounded-lg">
-               
                 <input
                   type={field.type}
                   className="input  w-full "
                   // placeholder={field.name}
-                  required={field.required}
+                  // required={field.required}
                   value={field.value}
                   onChange={(e) => handleInputChange(field.id, e.target.value)} // Update on change
                 />
-                 {field.type === "email" ? (
+                {field.type === "email" ? (
                   <div className="pr-2 ">
                     <IoIosMail size={24} color="gray" />
                   </div>
@@ -239,9 +408,7 @@ const FormFieldCreator: React.FC = () => {
                   )
                 )}
               </div>
-              {field.required && (
-                <span className="text-red-500 text-sm"> *</span>
-              )}
+      
             </div>
           ))}
           {formFields.length > 0 && (
@@ -255,7 +422,6 @@ const FormFieldCreator: React.FC = () => {
             </div>
           )}
         </div>
-   
       </div>
     </div>
   );
