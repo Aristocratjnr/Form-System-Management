@@ -48,7 +48,7 @@ const [fieldValue, setFieldValue]=useState<any>()
 
   const oldvalue = async () => {
     const rawData = await localStorage.getItem("dataValue");
-    setFormFields(rawData && JSON.parse(rawData));
+    setFormFields(rawData ? JSON.parse(rawData) : []);
   };
   let counter = 1
   const handleSubmit = () => {
@@ -130,7 +130,7 @@ const [fieldValue, setFieldValue]=useState<any>()
     // console.log(formFields)
   }, []);
 
-  // Function to convert snake_case to spaced out capitalized words
+  // Function to convert spaced out capitalized words
   function getFieldDisplayName(name: string): string {
     return name
       .split("_")
@@ -177,12 +177,12 @@ const [fieldValue, setFieldValue]=useState<any>()
                   onClick={() => {
                     setEdit(false);
                   }}
-                  className="w-6/12 flex justify-center border-r-2 rounded-l-full bg-blue-200 h-full p-2"
+                  className="w-6/12 flex justify-center border-r-2 rounded-l-full h-full p-2"
                 >
                   Edit
                 </button>
               ) : (
-                <button className="w-6/12 flex justify-center border-r-2  p-2 rounded-r-full">
+                <button className="w-6/12 flex justify-center border-r-2 bg-blue-200 p-2 rounded-r-full">
                   Edit
                 </button>
               )}
@@ -192,12 +192,12 @@ const [fieldValue, setFieldValue]=useState<any>()
                   onClick={() => {
                     setEdit(true);
                   }}
-                  className="w-6/12 flex justify-center border-l-2 rounded-r-full bg-blue-200 h-full p-2"
+                  className="w-6/12 flex justify-center border-l-2 rounded-r-full  h-full p-2"
                 >
                   Add
                 </button>
               ) : (
-                <button className="w-6/12 flex justify-center border-l-2  p-2 rounded-r-full">
+                <button className="w-6/12 flex justify-center border-l-2   p-2 rounded-r-full bg-blue-200">
                   Add
                 </button>
               )}
@@ -238,7 +238,7 @@ const [fieldValue, setFieldValue]=useState<any>()
                     <div className="">
                       <label
                         htmlFor="fieldName"
-                        className="block font-bold mb-1 "
+                        className="block font-light mb-1 "
                       >
                         Field name:
                       </label>
@@ -272,7 +272,7 @@ const [fieldValue, setFieldValue]=useState<any>()
                       htmlFor="fieldType"
                       className="block font-light mb-1"
                     >
-                   Select   Field :
+                   Select Field :
                     </label>
                     <select
                       id="fieldType"
@@ -329,7 +329,7 @@ const [fieldValue, setFieldValue]=useState<any>()
                     <div>
                       <label
                         htmlFor="fieldName"
-                        className="block font-bold mb-1"
+                        className="block font-light mb-1"
                       >
                         Field New name:
                       </label>
@@ -371,7 +371,7 @@ const [fieldValue, setFieldValue]=useState<any>()
           onDrop={handleDrop}
           onDragOver={handleDragOver}
         >
-          <h1>Generated Fields</h1>
+          <h1>Generated Fields</h1><br/>
           {formFields.map((field, index) => (
             <div
               key={field.id}
@@ -379,7 +379,7 @@ const [fieldValue, setFieldValue]=useState<any>()
               draggable
               onDragStart={(e) => handleDragStart(e, field.id)}
             >
-              <label className="block font-semibold text-sm mb-1">
+              <label className="block font-light text-sm mb-1">
                 {/* Modify the label to display spaced out capitalized field name */}
                 {getFieldDisplayName(field.name)}
               </label>
